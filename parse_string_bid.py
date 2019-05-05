@@ -1,4 +1,7 @@
 def parse_string_bid(text):
+  import spacy, re
+  nlp = spacy.load('en_core_web_sm')
+  english = [n.text.lower() for n in nlp.vocab if n.is_alpha and 2<len(n.text)<10]
   text = text.lower()
   text = re.sub(r'\W','',text)
   originaltext = text

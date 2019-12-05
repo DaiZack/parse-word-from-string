@@ -83,10 +83,14 @@ var checksite =async (url, keywords, conf)=>{
   out = out.map(x=>x.replace(/\W/g,' ').trim().toLowerCase())
   // console.log(out)
   var vendors = out.map(x=>conf['vendor'][x]).filter(x=>x != undefined)  
+  vendors = _.uniq(vendors)
   var clusters = out.map(x=>conf['cluster'][x]).filter(x=>x != undefined)
+  clusters = _.uniq(clusters)
   var activities =  out.map(x=>conf['activity'][x]).filter(x=>x != undefined)
+  activities = _.uniq(activities)
   var nodes = {vendors, clusters, activities}
   console.log(nodes)
 };
 
 checksite('https://www.data-blue.com', keywords, conf)
+

@@ -3,14 +3,28 @@ const cheerio = require('cheerio');
 const fs = require('fs');
 const _ = require('lodash');
 
-var conf = JSON.parse(fs.readFileSync('webWordsConfig.json').toString().toLowerCase())
+var conf = JSON.parse(fs.readFileSync('webWordsConfig.json').toString())
+
+conf['vendor'] = _.transform(conf['vendor'], function (result, val, key) {
+  result[key.toLowerCase()] = val;
+})
+
+conf['cluster'] = _.transform(conf['cluster'], function (result, val, key) {
+  result[key.toLowerCase()] = val;
+})
+
+conf['activity'] = _.transform(conf['activity'], function (result, val, key) {
+  result[key.toLowerCase()] = val;
+})
+
+// console.log(conf['vendor'] )
+
 var keywords = []
 for (a in conf){
   keywords = [...keywords, ...Object.keys(conf[a])]
 }
 keywords = keywords.map(x=>x.toLowerCase())
 // console.log(keywords)
-
 
 var visibleText = (res)=>{
   var $ = cheerio.load(res.data);
@@ -27,7 +41,6 @@ var checkKeywords = (text, keywords)=>{
   return text.match(pattern)
 };
 
-
 var checkpage = async (url, keywords)=>{
   try{
       console.log(url)
@@ -38,9 +51,7 @@ var checkpage = async (url, keywords)=>{
   }catch{
     return null
   }
-
 };
-
 
 var checksite =async (url, keywords, conf)=>{
   var domain = url.replace(/^.*:\/\//,'')
@@ -70,7 +81,7 @@ var checksite =async (url, keywords, conf)=>{
   out = _.uniq(out)
   out = out.filter(x=>x != null)
   out = out.map(x=>x.replace(/\W/g,' ').trim().toLowerCase())
-  console.log(out)
+  // console.log(out)
   var vendors = out.map(x=>conf['vendor'][x]).filter(x=>x != undefined)  
   var clusters = out.map(x=>conf['cluster'][x]).filter(x=>x != undefined)
   var activities =  out.map(x=>conf['activity'][x]).filter(x=>x != undefined)
